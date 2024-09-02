@@ -3,28 +3,34 @@ import { validationResult } from "express-validator";
 
 export class UserController {
 
-   static async register(req,res){
+   static register(req, res, next){
 
-    let errors = validationResult(req)
-    let email = req.body.email; 
-    let password = req.body.password;
+    const errors = validationResult(req)
+    const name = req.body.name;
+    const email = req.body.email; 
+    const phone = req.body.phone; 
+    const password = req.body.password;
+    const type = req.body.type;
+    const status = req.body.status;
 
     if(!errors.isEmpty()){
-      return res.status(400).json({errors: errors.array()})
+      next(new Error(errors.array()[0].msg))
     }
 
-    try {
+    const data = {
+      name,
+      email, 
+      phone,
+      password, 
+      type, 
+      status
+    }
 
-      let user = await User.create({
-        email: email, 
-        password: password
-      })
+    let user = new User(data)
+
+    user.save()
+      .then(user => res.send(user))
+      .catch(err => next(err))
   
-      res.status(200).json(user)
-    } catch (error) {
-      res.json({err: error.message})
-    }
-
   }
-
 }
