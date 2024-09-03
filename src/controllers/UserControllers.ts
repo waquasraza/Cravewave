@@ -3,7 +3,7 @@ import { validationResult } from "express-validator";
 
 export class UserController {
 
-   static register(req, res, next){
+   static async register(req, res, next){
 
     const errors = validationResult(req)
     const name = req.body.name;
@@ -26,11 +26,11 @@ export class UserController {
       status
     }
 
-    let user = new User(data)
-
-    user.save()
-      .then(user => res.send(user))
-      .catch(err => next(err))
-  
+    try {
+      let user = await new User(data).save()
+      res.send(user)
+    } catch (error) {
+      next(error)
+    }
   }
 }
