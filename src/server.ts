@@ -1,6 +1,7 @@
 import * as express from 'express'
 import * as mongoose from 'mongoose'
 import * as bodyParser from 'body-parser'
+import * as cors from 'cors'
 
 import { getEviromentVariables } from './environments/environment'
 import UserRouter from './routers/UserRouter'
@@ -18,7 +19,8 @@ export class Server {
 
   setConfigs(){
     this.connectMongoDB()
-    this.appMiddlewares()
+    this.configureBodyParser()
+    this.allowCors()
   }
 
   connectMongoDB(){
@@ -27,9 +29,13 @@ export class Server {
       .catch(e => console.log(e))
   }
 
-  appMiddlewares(){
+  configureBodyParser(){
     this.app.use(bodyParser.json({limit: "100mb"}))
     this.app.use(express.urlencoded({extended: true}))
+  }
+
+  allowCors(){
+    this.app.use(cors())
   }
 
   setRoutes(){

@@ -4,6 +4,9 @@ import {model} from 'mongoose'
 const userSchema = new mongoose.Schema({
   name: {type: String, required: true},
   email: {type: String, required: true},
+  email_varified: {type: Boolean, required: true, default: false},
+  varification_token: {type: Number, required: true},
+  varification_token_time: {type: Date, required: true},
   phone: {type: String, required: true},
   password: {type: String, required: true},
   type: {type: String, required: true},
