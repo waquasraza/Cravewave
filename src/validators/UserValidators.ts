@@ -13,4 +13,11 @@ export class UserValidators {
       body('status', 'User status is required').isString(),
     ]
   }
+
+  static verifyUserEmail (){
+    return [ 
+      body('varification_token', 'Email varification token is required').isNumeric(),
+      body('email', 'Email is required').isEmail(),
+    ]
+  }
 }
