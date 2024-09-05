@@ -1,4 +1,5 @@
 import User from "../models/User"
+import { Nodemailer } from "../utils/Nodemailer";
 import { Utils } from "../utils/Utils";
 
 export class UserController {
@@ -10,21 +11,27 @@ export class UserController {
     const password = req.body.password;
     const type = req.body.type;
     const status = req.body.status;
+    const varification_token = Utils.generateVarificationToken()
 
     const data = {
       name,
       email, 
-      varification_token: Utils.generateVarificationToken(),
+      varification_token ,
       varification_token_time: Date.now() + new Utils().MAX_TOKEN_TIME,
       phone,
       password, 
-      type, 
+      type,  
       status
     }
 
     try {
       let user = await new User(data).save()
       // send email to user varification
+      await Nodemailer.sendmail({
+        to: [email],
+        subject: 'test',
+        html: `<h1>Your OTP is: ${varification_token}</h1>`
+      })
       res.send(user)
     } catch (error) {
       next(error)
